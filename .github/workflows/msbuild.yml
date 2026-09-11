@@ -7,7 +7,7 @@ on:
 
 env:
   # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: build/VC17/MinHookVC17.sln
+  SOLUTION_FILE_PATH: build/VC18/MinHookVC18.slnx
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -20,6 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -38,8 +43,8 @@ jobs:
         shell: bash
         run: |
           mkdir "${{ runner.temp }}/artifacts"
-          mv "build/VC17/bin/${{ env.BUILD_CONFIGURATION }}" "${{ runner.temp }}/artifacts/bin"
-          mv "build/VC17/lib/${{ env.BUILD_CONFIGURATION }}" "${{ runner.temp }}/artifacts/lib"
+          mv "build/VC18/bin/${{ env.BUILD_CONFIGURATION }}" "${{ runner.temp }}/artifacts/bin"
+          mv "build/VC18/lib/${{ env.BUILD_CONFIGURATION }}" "${{ runner.temp }}/artifacts/lib"
           cp -r include "${{ runner.temp }}/artifacts/include"
 
       - name: Package bin

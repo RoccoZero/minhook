@@ -5,21 +5,24 @@ using System.Text;
 
 namespace MinHookNET;
 
-/// <summary>Provides managed access to the MinHook API for creating and controlling native function hooks.</summary>
+/// <summary>Provides managed access to the MinHook API for creating and controlling native function hooks on Windows x86 and x64.</summary>
 public static unsafe partial class MinHook
 {
     private const string LibraryName = "MinHook";
 
-    /// <summary>Gets the special target value used to apply an operation to all created hooks.</summary>
+    /// <summary>
+    /// Gets the special target value accepted by <see cref="EnableHook"/>, <see cref="DisableHook"/>,
+    /// <see cref="QueueEnableHook"/>, and <see cref="QueueDisableHook"/> to address all created hooks.
+    /// </summary>
     public static nint AllHooks => 0;
 
-    /// <summary>Initializes the MinHook library. Call this once before using other MinHook operations.</summary>
+    /// <summary>Initializes the MinHook library. Call this exactly once at the beginning of the program.</summary>
     /// <returns>A status value describing the result.</returns>
     [LibraryImport(LibraryName, EntryPoint = "MH_Initialize")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
     public static partial MinHookStatus Initialize();
 
-    /// <summary>Uninitializes the MinHook library and removes all created hooks.</summary>
+    /// <summary>Uninitializes the MinHook library. Call this exactly once at the end of the program.</summary>
     /// <returns>A status value describing the result.</returns>
     [LibraryImport(LibraryName, EntryPoint = "MH_Uninitialize")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
@@ -83,7 +86,7 @@ public static unsafe partial class MinHook
 
     /// <summary>Creates a hook for an exported function using unmanaged name pointers.</summary>
     /// <param name="moduleName">Pointer to a null-terminated UTF-16 module name.</param>
-    /// <param name="procedureName">Pointer to a null-terminated ANSI procedure name.</param>
+    /// <param name="procedureName">Pointer to a null-terminated 8-bit procedure name.</param>
     /// <param name="detour">Address of the detour function.</param>
     /// <param name="original">Receives the trampoline address used to call the original function.</param>
     /// <returns>A status value describing the result.</returns>
@@ -93,7 +96,7 @@ public static unsafe partial class MinHook
 
     /// <summary>Creates a hook for an exported function and returns its resolved address using unmanaged name pointers.</summary>
     /// <param name="moduleName">Pointer to a null-terminated UTF-16 module name.</param>
-    /// <param name="procedureName">Pointer to a null-terminated ANSI procedure name.</param>
+    /// <param name="procedureName">Pointer to a null-terminated 8-bit procedure name.</param>
     /// <param name="detour">Address of the detour function.</param>
     /// <param name="original">Receives the trampoline address used to call the original function.</param>
     /// <param name="target">Receives the target function address.</param>
@@ -103,7 +106,7 @@ public static unsafe partial class MinHook
     public static partial MinHookStatus CreateHookApiEx(char* moduleName, byte* procedureName, nint detour, out nint original, out nint target);
 
     /// <summary>Removes a previously created hook.</summary>
-    /// <param name="target">Target function address, or <see cref="AllHooks"/> to remove all hooks.</param>
+    /// <param name="target">Address of the target function whose hook will be removed.</param>
     /// <returns>A status value describing the result.</returns>
     [LibraryImport(LibraryName, EntryPoint = "MH_RemoveHook")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
@@ -124,28 +127,28 @@ public static unsafe partial class MinHook
     public static partial MinHookStatus DisableHook(nint target);
 
     /// <summary>Queues a request to enable a hook without applying it immediately.</summary>
-    /// <param name="target">Target function address, or <see cref="AllHooks"/> to queue all hooks.</param>
+    /// <param name="target">Target function address, or <see cref="AllHooks"/> to queue enabling all created hooks.</param>
     /// <returns>A status value describing the result.</returns>
     [LibraryImport(LibraryName, EntryPoint = "MH_QueueEnableHook")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
     public static partial MinHookStatus QueueEnableHook(nint target);
 
     /// <summary>Queues a request to disable a hook without applying it immediately.</summary>
-    /// <param name="target">Target function address, or <see cref="AllHooks"/> to queue all hooks.</param>
+    /// <param name="target">Target function address, or <see cref="AllHooks"/> to queue disabling all created hooks.</param>
     /// <returns>A status value describing the result.</returns>
     [LibraryImport(LibraryName, EntryPoint = "MH_QueueDisableHook")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
     public static partial MinHookStatus QueueDisableHook(nint target);
 
-    /// <summary>Applies all queued hook enable and disable operations in one transaction.</summary>
+    /// <summary>Applies all queued hook enable and disable changes in one operation.</summary>
     /// <returns>A status value describing the result.</returns>
     [LibraryImport(LibraryName, EntryPoint = "MH_ApplyQueued")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
     public static partial MinHookStatus ApplyQueued();
 
-    /// <summary>Returns the native MinHook description for a status value.</summary>
+    /// <summary>Returns the native MinHook name for a status value.</summary>
     /// <param name="status">Status value to describe.</param>
-    /// <returns>The native description, or the enum member name when no description is available.</returns>
+    /// <returns>The native status name, or the managed enum member name when no native name is available.</returns>
     public static string StatusToString(MinHookStatus status) => Marshal.PtrToStringUTF8(StatusToStringPointer(status)) ?? status.ToString();
 
     [LibraryImport(LibraryName, EntryPoint = "MH_StatusToString")]

@@ -3,7 +3,7 @@
 /// <summary>Identifies the result of a MinHook operation.</summary>
 public enum MinHookStatus
 {
-    /// <summary>The status value is unknown.</summary>
+    /// <summary>An unknown error occurred. MinHook should not return this value.</summary>
     Unknown = -1,
 
     /// <summary>The operation completed successfully.</summary>
@@ -12,22 +12,22 @@ public enum MinHookStatus
     /// <summary>The MinHook library is already initialized.</summary>
     ErrorAlreadyInitialized,
 
-    /// <summary>The MinHook library is not initialized.</summary>
+    /// <summary>The MinHook library is not initialized yet or has already been uninitialized.</summary>
     ErrorNotInitialized,
 
     /// <summary>A hook is already created for the specified target.</summary>
     ErrorAlreadyCreated,
 
-    /// <summary>No hook is created for the specified target.</summary>
+    /// <summary>A hook has not been created yet for the specified target.</summary>
     ErrorNotCreated,
 
     /// <summary>The specified hook is already enabled.</summary>
     ErrorEnabled,
 
-    /// <summary>The specified hook is already disabled.</summary>
+    /// <summary>The specified hook is not enabled yet or is already disabled.</summary>
     ErrorDisabled,
 
-    /// <summary>The specified target or detour address is not executable.</summary>
+    /// <summary>The specified pointer is invalid because it refers to an unallocated or non-executable memory region.</summary>
     ErrorNotExecutable,
 
     /// <summary>The target function cannot be hooked because it is unsupported.</summary>
@@ -39,9 +39,9 @@ public enum MinHookStatus
     /// <summary>Changing native memory protection failed.</summary>
     ErrorMemoryProtection,
 
-    /// <summary>The specified module was not found.</summary>
+    /// <summary>The specified module is not loaded.</summary>
     ErrorModuleNotFound,
 
-    /// <summary>The specified exported function was not found.</summary>
+    /// <summary>The specified function was not found.</summary>
     ErrorFunctionNotFound
 }

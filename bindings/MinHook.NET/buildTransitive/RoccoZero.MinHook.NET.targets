@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(PublishAot)' != 'true' and '$(MinHookRuntimeIdentifier)' != ''">
-    <Content Include="$(MSBuildThisFileDirectory)native\$(MinHookRuntimeIdentifier)\MinHook.dll" Link="MinHook.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="$(MSBuildThisFileDirectory)native\$(MinHookRuntimeIdentifier)\MinHook.dll" Link="MinHook.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
   <Target Name="ValidateMinHookPlatform" BeforeTargets="PrepareForBuild" Condition="'$(MinHookRuntimeIdentifier)' == ''">

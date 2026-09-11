@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <PackageId>RoccoZero.MinHook.NET</PackageId>
+    <PackageVersion>1.3.4</PackageVersion>
+    <Authors>RoccoZero;Tsuda Kageyu</Authors>
+    <Description>Managed MinHook API with dynamic and NativeAOT static linking support for Windows x86 and x64.</Description>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>minhook nativeaot hook detour windows x86 x64</PackageTags>
+    <RepositoryUrl>https://github.com/RoccoZero/minhook</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="buildTransitive\RoccoZero.MinHook.NET.targets" Pack="true" PackagePath="buildTransitive\RoccoZero.MinHook.NET.targets" />
+    <None Include="..\..\build\VC18\lib\Release\libMinHook.x64.lib" Pack="true" PackagePath="buildTransitive\native\win-x64\MinHook.lib" />
+    <None Include="..\..\build\VC18\lib\Release\libMinHook.x86.lib" Pack="true" PackagePath="buildTransitive\native\win-x86\MinHook.lib" />
+    <None Include="..\..\build\VC18\bin\Release\MinHook.x64.dll" Pack="true" PackagePath="buildTransitive\native\win-x64\MinHook.dll" />
+    <None Include="..\..\build\VC18\bin\Release\MinHook.x86.dll" Pack="true" PackagePath="buildTransitive\native\win-x86\MinHook.dll" />
+  </ItemGroup>
+
+  <Target Name="BuildMinHookNativeLibraries" BeforeTargets="GenerateNuspec">
+    <MSBuild Projects="..\..\build\VC18\libMinHook.vcxproj" Properties="Configuration=Release;Platform=x64;PlatformToolset=$(PlatformToolset)" />
+    <MSBuild Projects="..\..\build\VC18\libMinHook.vcxproj" Properties="Configuration=Release;Platform=Win32;PlatformToolset=$(PlatformToolset)" />
+    <MSBuild Projects="..\..\build\VC18\MinHook.vcxproj" Properties="Configuration=Release;Platform=x64;PlatformToolset=$(PlatformToolset)" />
+    <MSBuild Projects="..\..\build\VC18\MinHook.vcxproj" Properties="Configuration=Release;Platform=Win32;PlatformToolset=$(PlatformToolset)" />
+  </Target>
+
+</Project>

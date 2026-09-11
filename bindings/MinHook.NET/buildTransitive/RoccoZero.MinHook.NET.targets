@@ -1,0 +1,21 @@
+<Project>
+
+  <PropertyGroup>
+    <MinHookRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x86' or '$(PlatformTarget)' == 'x86'">win-x86</MinHookRuntimeIdentifier>
+    <MinHookRuntimeIdentifier Condition="'$(MinHookRuntimeIdentifier)' == '' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(PlatformTarget)' == 'x64' or '$(PlatformTarget)' == 'AnyCPU')">win-x64</MinHookRuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(PublishAot)' == 'true' and '$(MinHookRuntimeIdentifier)' != ''">
+    <DirectPInvoke Include="MinHook" />
+    <NativeLibrary Include="$(MSBuildThisFileDirectory)native\$(MinHookRuntimeIdentifier)\MinHook.lib" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(PublishAot)' != 'true' and '$(MinHookRuntimeIdentifier)' != ''">
+    <Content Include="$(MSBuildThisFileDirectory)native\$(MinHookRuntimeIdentifier)\MinHook.dll" Link="MinHook.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="ValidateMinHookPlatform" BeforeTargets="PrepareForBuild" Condition="'$(MinHookRuntimeIdentifier)' == ''">
+    <Error Text="MinHook supports only Windows x86 and x64 targets. Set RuntimeIdentifier to win-x86 or win-x64." />
+  </Target>
+
+</Project>

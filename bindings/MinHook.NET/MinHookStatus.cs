@@ -1,4 +1,4 @@
-namespace MinHook.NET;
+﻿namespace MinHookNET;
 
 /// <summary>Identifies the result of a MinHook operation.</summary>
 public enum MinHookStatus

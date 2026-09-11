@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace MinHook.NET;
+namespace MinHookNET;
 
 /// <summary>Provides managed access to the MinHook API for creating and controlling native function hooks.</summary>
 public static unsafe partial class MinHook
